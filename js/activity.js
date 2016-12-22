@@ -28,31 +28,13 @@ define(function (require) {
             activity.close();
         });
 
-	// A handlebars template for generating the dot labels
-        var labelSource =
-            "<div>" +
-	    "{{#each labels}}" +
-	    "<h2 id=\"n{{this}}\" style=\"position:absolute;-webkit-user-select: none;-moz-user-select: -moz-none;\">{{this}}</h2>" +
-	    "{{/each}}" +
-	    "</div>"
-
-	// Create label elements for each of our dots
-        template = Handlebars.compile(labelSource);
-        var arrLabels = [];
-        for (i = 0; i < 21; i++) {
-            arrLabels[i] = i+1;
-        }
-        var labelElem = document.getElementById("labelDiv");
-        var html = template({labels:arrLabels});
-        labelElem.innerHTML = html;
-
-	// Then create a list of the label elements
+        // Then create a list of the label elements
         nlabels = [];
-        for (i = 0; i < arrLabels.length; i++) {
-	    nlabels[i] = document.getElementById("n" + i.toString());
+        for (i = 0; i < 21; i++) {
+            nlabels[i] = document.getElementById("n" + i.toString());
         }
 
-	// Stage is an Easel construct
+        // Stage is an Easel construct
         var canvas, stage;
 
         // The display object currently under the mouse, or being dragged
@@ -73,6 +55,7 @@ define(function (require) {
         var imagepos = new Array();
         var myimages = new Array();
         var bitmaps = new Array();
+        var bitmapLabels = new Array();
         var pen_bitmap;
 
         var Star = "images/star.svg";
@@ -81,8 +64,8 @@ define(function (require) {
 
         var shape = -1;
 
-	// Get things started
-	init();
+        // Get things started
+        init();
 
         function init() {
             if (window.top != window) {
@@ -93,7 +76,7 @@ define(function (require) {
             canvas = document.getElementById("myCanvas");
 
             index = 0;
-            colors = ["#D0033C","#01A4A9","#E9510E","#CCCE01","#FDC415","#E1338C"];
+            colors = ["#D0033C", "#01A4A9", "#E9510E", "#CCCE01", "#FDC415", "#E1338C"];
             oldPt = new createjs.Point(400, 300);
             midPt = oldPt;
             oldMidPt = oldPt;
@@ -116,6 +99,7 @@ define(function (require) {
             }
             for (i = 0; i < nlabels.length; i++) {
                 myimages[i] = new Image();
+                myimages[i].dataId = i;
                 if (i == 0) {
                     myimages[i].src = Star;
                 } else {
@@ -143,7 +127,7 @@ define(function (require) {
             var image = event.target;
             var imgW = image.width;
             var imgH = image.height;
-            var bitmap;
+            var bitmap, bitText;
             var container = new createjs.Container();
             stage.addChild(container);
 
@@ -156,18 +140,26 @@ define(function (require) {
             hitArea.y = imgH / 2;
 
             i = myimages.indexOf(image)
-            // Create and populate the screen with number icons.
+                // Create and populate the screen with number icons.
             bitmap = new createjs.Bitmap(image);
             bitmaps[i] = bitmap // Save now so we can reposition later.
+
+            bitText = new createjs.Text(image.dataId.toString(), "bold 20px Arial", "#000");
+            bitmapLabels[i] = bitText;
             container.addChild(bitmap);
-            bitmap.x = imagepos[i][0]
-            bitmap.y = imagepos[i][1]
+            container.addChild(bitText);
+            var labelX = imagepos[i][0],
+                labelY = imagepos[i][1];
+            bitmap.x = labelX,
+                bitmap.y = labelY;
+            bitText.x = labelX,
+                bitText.y = labelY;
             bitmap.regX = imgW / 2 | 0;
             bitmap.regY = imgH / 2 | 0;
-	    if (i == 0) {
-	        bitmap.scaleX = bitmap.scaleY = bitmap.scale = 0.5
+            if (i == 0) {
+                bitmap.scaleX = bitmap.scaleY = bitmap.scale = 0.5
             } else {
-	        bitmap.scaleX = bitmap.scaleY = bitmap.scale = 1.5
+                bitmap.scaleX = bitmap.scaleY = bitmap.scale = 1.5
             }
             bitmap.name = "bmp_" + i;
 
@@ -185,6 +177,7 @@ define(function (require) {
 
         function handlePenLoad(event) {
             var image = event.target;
+            var tt = new createjs.Text("fdfd");
             var imgW = image.width;
             var imgH = image.height;
             var bitmap;
@@ -200,8 +193,9 @@ define(function (require) {
 
             // Create a pen
             bitmap = new createjs.Bitmap(image);
-	    pen_bitmap = bitmap
+            pen_bitmap = bitmap
             container.addChild(bitmap);
+            container.addChild(tt);
             bitmap.x = imagepos[0][0]
             bitmap.y = imagepos[0][1]
             bitmap.regX = imgW / 2 | 0;
@@ -270,7 +264,7 @@ define(function (require) {
         }
 
         function new_positions() {
-	    if( shape == -1 ) {
+            if (shape == -1) {
                 shape = 0
                 return
             }
@@ -278,26 +272,25 @@ define(function (require) {
             for (i = 0; i < bitmaps.length; i++) {
                 if (shape < shapes.length) {
                     if (i < shapes[shape].length) {
-                        bitmaps[i].x = shapes[shape][i][0];
-                        bitmaps[i].y = shapes[shape][i][1];
+                        var shapeX = shapes[shape][i][0],
+                            shapeY = shapes[shape][i][1];
+                        bitmaps[i].x = shapeX;
+                        bitmaps[i].y = shapeY;
+                        bitmapLabels[i].x = shapeX - 5;
+                        bitmapLabels[i].y = shapeY - 7;
                     } else {
-                        bitmaps[i].x = -100;
-                        bitmaps[i].y = -100;
+                        var outRange = -100;
+                        bitmaps[i].x = outRange;
+                        bitmaps[i].y = outRange;
+                        bitmapLabels[i].x = outRange;
+                        bitmapLabels[i].y = outRange;
                     }
                 } else {
                     bitmaps[i].x = canvas.width * Math.random() | 0;
                     bitmaps[i].y = canvas.height * Math.random() | 0;
+                    bitmapLabels[i].x = canvas.width * Math.random() | 0;
+                    bitmapLabels[i].y = canvas.height * Math.random() | 0;
                 }
-            }
-            for (i = 0; i < bitmaps.length-1; i++) {
-                // Put the label in the dot 
-                var j=i+1; //to remove the display of "0"
-                if (i < 10) {
-                    nlabels[j].style.left = Math.round(bitmaps[j].x + canvas.offsetLeft - 5) + "px";
-                } else {
-                    nlabels[j].style.left = Math.round(bitmaps[j].x + canvas.offsetLeft - 11) + "px";
-                }
-                nlabels[j].style.top = Math.round(bitmaps[j].y + canvas.offsetTop - 30) + "px";
             }
 
             pen_bitmap.x = bitmaps[0].x;
