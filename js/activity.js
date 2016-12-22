@@ -93,9 +93,7 @@ define(function (require) {
             canvas = document.getElementById("myCanvas");
 
             index = 0;
-            colors = ["#828b20", "#b0ac31", "#cbc53d", "#fad779", "#f9e4ad",
-                  "#faf2db", "#563512", "#9b4a0b", "#d36600", "#fe8a00",
-                  "#f9a71f"];
+            colors = ["#D0033C","#01A4A9","#E9510E","#CCCE01","#FDC415","#E1338C"];
             oldPt = new createjs.Point(400, 300);
             midPt = oldPt;
             oldMidPt = oldPt;
