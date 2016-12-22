@@ -40,7 +40,7 @@ define(function (require) {
         template = Handlebars.compile(labelSource);
         var arrLabels = [];
         for (i = 0; i < 21; i++) {
-            arrLabels[i] = i;
+            arrLabels[i] = i+1;
         }
         var labelElem = document.getElementById("labelDiv");
         var html = template({labels:arrLabels});
@@ -192,7 +192,6 @@ define(function (require) {
             var bitmap;
             var container = new createjs.Container();
             stage.addChild(container);
-
             // Create a shape that represents the center of the icon
             var hitArea = new createjs.Shape();
             hitArea.graphics.beginFill("#FFF").drawEllipse(-22, -28, 48, 36);
@@ -292,14 +291,15 @@ define(function (require) {
                     bitmaps[i].y = canvas.height * Math.random() | 0;
                 }
             }
-            for (i = 0; i < bitmaps.length; i++) {
+            for (i = 0; i < bitmaps.length-1; i++) {
                 // Put the label in the dot 
+                var j=i+1; //to remove the display of "0"
                 if (i < 10) {
-                    nlabels[i].style.left = Math.round(bitmaps[i].x + canvas.offsetLeft - 5) + "px";
+                    nlabels[j].style.left = Math.round(bitmaps[j].x + canvas.offsetLeft - 5) + "px";
                 } else {
-                    nlabels[i].style.left = Math.round(bitmaps[i].x + canvas.offsetLeft - 11) + "px";
+                    nlabels[j].style.left = Math.round(bitmaps[j].x + canvas.offsetLeft - 11) + "px";
                 }
-                nlabels[i].style.top = Math.round(bitmaps[i].y + canvas.offsetTop - 30) + "px";
+                nlabels[j].style.top = Math.round(bitmaps[j].y + canvas.offsetTop - 30) + "px";
             }
 
             pen_bitmap.x = bitmaps[0].x;
