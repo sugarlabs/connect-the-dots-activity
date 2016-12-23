@@ -177,7 +177,6 @@ define(function (require) {
 
         function handlePenLoad(event) {
             var image = event.target;
-            var tt = new createjs.Text("fdfd");
             var imgW = image.width;
             var imgH = image.height;
             var bitmap;
@@ -195,7 +194,6 @@ define(function (require) {
             bitmap = new createjs.Bitmap(image);
             pen_bitmap = bitmap
             container.addChild(bitmap);
-            container.addChild(tt);
             bitmap.x = imagepos[0][0]
             bitmap.y = imagepos[0][1]
             bitmap.regX = imgW / 2 | 0;
@@ -278,6 +276,9 @@ define(function (require) {
                         bitmaps[i].y = shapeY;
                         bitmapLabels[i].x = shapeX - 5;
                         bitmapLabels[i].y = shapeY - 7;
+                        if (i > 9) {
+                            bitmapLabels[i].x = shapeX - 11;
+                        }
                     } else {
                         var outRange = -100;
                         bitmaps[i].x = outRange;
