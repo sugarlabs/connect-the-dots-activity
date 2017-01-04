@@ -4,7 +4,7 @@ define(function (require) {
     require("easel");
     require("handlebars")
     var shapes = require("activity/shapes")
-        // Manipulate the DOM only when it is ready.
+    // Manipulate the DOM only when it is ready.
     require(['domReady!'], function (doc) {
         // Initialize the activity.
         activity.setup();
@@ -15,9 +15,9 @@ define(function (require) {
         });
         var newButton = document.getElementById("new-button");
         newButton.onclick = function () {
-                new_positions();
-            }
-            // Make the activity stop with the stop button.
+            new_positions();
+        }
+        // Make the activity stop with the stop button.
         var stopButton = document.getElementById("stop-button");
         stopButton.addEventListener('click', function (e) {
             activity.close();
@@ -119,15 +119,15 @@ define(function (require) {
             hitArea.x = imgW / 2;
             hitArea.y = imgH / 2;
             i = myimages.indexOf(image)
-                // Create and populate the screen with number icons.
+            // Create and populate the screen with number icons.
             bitmap = new createjs.Bitmap(image);
             bitmaps[i] = bitmap // Save now so we can reposition later.
             bitText = new createjs.Text(image.dataId.toString(), "bold 20px Arial", "#000");
             bitmapLabels[i] = bitText;
             container.addChild(bitmap);
             container.addChild(bitText);
-            var labelX = imagepos[i][0]
-                , labelY = imagepos[i][1];
+            var labelX = imagepos[i][0];
+	    var labelY = imagepos[i][1];
             bitmap.x = labelX, bitmap.y = labelY;
             bitText.x = labelX, bitText.y = labelY;
             bitmap.regX = imgW / 2 | 0;
@@ -181,8 +181,8 @@ define(function (require) {
                     // Bump the target in front of its siblings:
                     container.addChild(target);
                     var offset = {
-                        x: target.x - evt.stageX
-                        , y: target.y - evt.stageY
+                        x: target.x - evt.stageX,
+                        y: target.y - evt.stageY
                     };
                     evt.onMouseMove = function (ev) {
                         target.x = ev.stageX + offset.x;
@@ -226,17 +226,17 @@ define(function (require) {
 
         function new_positions() {
             if (shape == -1) {
-                shape = 0
-                return
+                shape = 0;
+                return;
             }
             for (i = 0; i < bitmaps.length; i++) {
                 if (shape < shapes.length) {
                     if (i < shapes[shape].length) {
-                        var shapeX = shapes[shape][i][0]
-                            , shapeY = shapes[shape][i][1]
-                            , fontSize = 6
-                            , ovrhdX = i.toString().length * fontSize
-                            , ovrhdY = fontSize + 4;
+                        var shapeX = shapes[shape][i][0];
+                        var shapeY = shapes[shape][i][1];
+                        var fontSize = 6;
+                        var ovrhdX = i.toString().length * fontSize;
+                        var ovrhdY = fontSize + 4;
                         bitmaps[i].x = shapeX;
                         bitmaps[i].y = shapeY;
                         bitmapLabels[i].x = shapeX - ovrhdX;
