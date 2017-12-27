@@ -51,7 +51,7 @@ define(function (require) {
         var Star = "images/star.svg";
         var Dot = "images/dot.svg";
         var Pen = "images/pen.svg";
-        var shape = -1;
+        var shape = 0;
         // Get things started
         init();
 
@@ -225,9 +225,8 @@ define(function (require) {
         }
 
         function new_positions() {
-            if (shape == -1) {
+            if (shape >= 12) {
                 shape = 0;
-                return;
             }
             for (i = 0; i < bitmaps.length; i++) {
                 if (shape < shapes.length) {
