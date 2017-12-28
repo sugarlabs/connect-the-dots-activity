@@ -225,7 +225,7 @@ define(function (require) {
         }
 
         function new_positions() {
-            if (shape >= 12) {
+            if (shape >= shapes.length) {
                 shape = 0;
             }
             for (i = 0; i < bitmaps.length; i++) {
