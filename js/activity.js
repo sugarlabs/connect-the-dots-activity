@@ -225,17 +225,14 @@ define(function (require) {
         }
 
         function new_positions() {
-            if (shape >= shapes.length) {
-                shape = 0;
-            }
             for (i = 0; i < bitmaps.length; i++) {
+                var fontSize = 6;
+                var ovrhdX = i.toString().length * fontSize;
+                var ovrhdY = fontSize + 4;
                 if (shape < shapes.length) {
                     if (i < shapes[shape].length) {
                         var shapeX = shapes[shape][i][0];
                         var shapeY = shapes[shape][i][1];
-                        var fontSize = 6;
-                        var ovrhdX = i.toString().length * fontSize;
-                        var ovrhdY = fontSize + 4;
                         bitmaps[i].x = shapeX;
                         bitmaps[i].y = shapeY;
                         bitmapLabels[i].x = shapeX - ovrhdX;
@@ -252,8 +249,8 @@ define(function (require) {
                 else {
                     bitmaps[i].x = canvas.width * Math.random() | 0;
                     bitmaps[i].y = canvas.height * Math.random() | 0;
-                    bitmapLabels[i].x = canvas.width * Math.random() | 0;
-                    bitmapLabels[i].y = canvas.height * Math.random() | 0;
+                    bitmapLabels[i].x = bitmaps[i].x - ovrhdX;
+                    bitmapLabels[i].y = bitmaps[i].y - ovrhdY;
                 }
             }
             pen_bitmap.x = bitmaps[0].x;
