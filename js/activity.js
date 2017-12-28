@@ -230,27 +230,20 @@ define(function (require) {
                 var ovrhdY = fontSize + 4;
                 if (shape < shapes.length) {
                     if (i < shapes[shape].length) {
-                        var shapeX = shapes[shape][i][0];
-                        var shapeY = shapes[shape][i][1];
-                        bitmaps[i].x = shapeX;
-                        bitmaps[i].y = shapeY;
-                        bitmapLabels[i].x = shapeX - ovrhdX;
-                        bitmapLabels[i].y = shapeY - ovrhdY;
+                        bitmaps[i].x = shapes[shape][i][0];
+                        bitmaps[i].y = shapes[shape][i][1];
                     }
                     else {
-                        var outRange = -100;
-                        bitmaps[i].x = outRange;
-                        bitmaps[i].y = outRange;
-                        bitmapLabels[i].x = outRange;
-                        bitmapLabels[i].y = outRange;
+                        bitmaps[i].x = -100;
+                        bitmaps[i].y = -100;
                     }
                 }
                 else {
                     bitmaps[i].x = canvas.width * Math.random() | 0;
                     bitmaps[i].y = canvas.height * Math.random() | 0;
-                    bitmapLabels[i].x = bitmaps[i].x - ovrhdX;
-                    bitmapLabels[i].y = bitmaps[i].y - ovrhdY;
                 }
+                bitmapLabels[i].x = bitmaps[i].x - ovrhdX;
+                bitmapLabels[i].y = bitmaps[i].y - ovrhdY;
             }
             pen_bitmap.x = bitmaps[0].x;
             pen_bitmap.y = bitmaps[0].y;
