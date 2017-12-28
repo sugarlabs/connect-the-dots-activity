@@ -96,7 +96,6 @@ define(function (require) {
             // Create a drawing canvas
             drawingCanvas = new createjs.Shape();
             stage.addChild(drawingCanvas);
-            new_positions();
             stage.update();
         }
 
