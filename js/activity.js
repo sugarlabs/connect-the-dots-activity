@@ -251,5 +251,12 @@ define(function (require) {
             update = true;
             shape = shape + 1;
         }
+
+        document.getElementById('clear-button').addEventListener('click',function(){
+            var canvasContext = canvas.getContext('2d');
+            canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+            canvasContext.beginPath();
+        });
+
     });
 });
