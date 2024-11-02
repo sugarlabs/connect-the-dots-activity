@@ -251,5 +251,21 @@ define(function (require) {
             update = true;
             shape = shape + 1;
         }
+
+        function downloadCanvas(link, canvasId, filename) {
+            link.href = document.getElementById(canvasId).toDataURL();
+            link.download = filename;
+            print_voucher();
+        }
+        function print_voucher(){
+            var win=window.open();
+            win.document.write("<br><img src='"+canvas.toDataURL()+"'/>");
+            win.print();
+            win.location.reload();
+        }
+        document.getElementById('save-button').addEventListener('click', function() {
+            downloadCanvas(this, 'myCanvas', 'My_Drawing.png');
+        }, false);
+
     });
 });
