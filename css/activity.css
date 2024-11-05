@@ -5,6 +5,7 @@
 #main-toolbar #new-button {
   background-image: url(../icons/new-button.svg);
 }
+
 #main-toolbar #clear-button {
   background-image: url(../images/clear.svg);
 }
