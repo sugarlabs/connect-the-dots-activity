@@ -2,32 +2,43 @@ define(function (require) {
     var activity = require("sugar-web/activity/activity");
     var icon = require("sugar-web/graphics/icon");
     require("easel");
-    require("handlebars")
-    var shapes = require("activity/shapes")
+    require("handlebars");
+    var shapes = require("activity/shapes");
+
     // Manipulate the DOM only when it is ready.
     require(['domReady!'], function (doc) {
         // Initialize the activity.
         activity.setup();
+
         // Colorize the activity icon.
         var activityButton = document.getElementById("activity-button");
         activity.getXOColor(function (error, colors) {
             icon.colorize(activityButton, colors);
         });
+
+        // Handle New Button Click
         var newButton = document.getElementById("new-button");
         newButton.onclick = function () {
             new_positions();
         }
-        // Make the activity stop with the stop button.
+
+        // Handle Stop Button Click
         var stopButton = document.getElementById("stop-button");
         stopButton.addEventListener('click', function (e) {
             activity.close();
         });
+
+        // Handle Clear Button Click
+        var clearButton = document.getElementById("clear-button"); // **New Line**
+        clearButton.addEventListener('click', clearCanvas); // **New Line**
+
         // Then create a list of the label elements
-        nlabels = [];
-        for (i = 0; i < 21; i++) {
+        var nlabels = [];
+        for (var i = 0; i < 21; i++) {
             nlabels[i] = document.getElementById("n" + i.toString());
         }
-        // Stage is an Easel construct
+
+        // Stage is an EaselJS construct
         var canvas, stage;
         // The display object currently under the mouse, or being dragged
         var mouseTarget;
@@ -43,15 +54,16 @@ define(function (require) {
         var stroke;
         var colors;
         var index;
-        var imagepos = new Array();
-        var myimages = new Array();
-        var bitmaps = new Array();
-        var bitmapLabels = new Array();
+        var imagepos = [];
+        var myimages = [];
+        var bitmaps = [];
+        var bitmapLabels = [];
         var pen_bitmap;
         var Star = "images/star.svg";
         var Dot = "images/dot.svg";
         var Pen = "images/pen.svg";
         var shape = 0;
+
         // Get things started
         init();
 
@@ -73,13 +85,13 @@ define(function (require) {
             createjs.Touch.enable(stage);
             // Keep tracking the mouse even when it leaves the canvas
             stage.mouseMoveOutside = true;
-            // Enabled mouse over and mouse out events
+            // Enable mouse over and mouse out events
             stage.enableMouseOver(10);
             // Load the source images: a dot, a star and a turtle
-            for (i = 0; i < nlabels.length; i++) {
+            for (var i = 0; i < nlabels.length; i++) {
                 imagepos[i] = [-100, -100];
             }
-            for (i = 0; i < nlabels.length; i++) {
+            for (var i = 0; i < nlabels.length; i++) {
                 myimages[i] = new Image();
                 myimages[i].dataId = i;
                 if (i == 0) {
@@ -117,32 +129,36 @@ define(function (require) {
             // of the target (bitmap instances):
             hitArea.x = imgW / 2;
             hitArea.y = imgH / 2;
-            i = myimages.indexOf(image)
+            var i = myimages.indexOf(image);
             // Create and populate the screen with number icons.
             bitmap = new createjs.Bitmap(image);
-            bitmaps[i] = bitmap // Save now so we can reposition later.
+            bitmaps[i] = bitmap; // Save now so we can reposition later.
             bitText = new createjs.Text(image.dataId.toString(), "bold 20px Arial", "#000");
             bitmapLabels[i] = bitText;
             container.addChild(bitmap);
             container.addChild(bitText);
             var labelX = imagepos[i][0];
-	    var labelY = imagepos[i][1];
-            bitmap.x = labelX, bitmap.y = labelY;
-            bitText.x = labelX, bitText.y = labelY;
-            bitmap.regX = imgW / 2 | 0;
-            bitmap.regY = imgH / 2 | 0;
+            var labelY = imagepos[i][1];
+            bitmap.x = labelX;
+            bitmap.y = labelY;
+            bitText.x = labelX;
+            bitText.y = labelY;
+            bitmap.regX = Math.floor(imgW / 2);
+            bitmap.regY = Math.floor(imgH / 2);
             if (i == 0) {
-                bitmap.scaleX = bitmap.scaleY = bitmap.scale = 0.5
+                bitmap.scaleX = bitmap.scaleY = bitmap.scale = 0.5;
             }
             else {
-                bitmap.scaleX = bitmap.scaleY = bitmap.scale = 1.5
+                bitmap.scaleX = bitmap.scaleY = bitmap.scale = 1.5;
             }
             bitmap.name = "bmp_" + i;
             bitmap.cursor = "pointer";
-            // Eventually, we can check this to make sure the number
-            // has been touched.
+            // Assign the hitArea to bitmap to use it for hit tests:
             bitmap.hitArea = hitArea;
+
+            // Wrapper function to provide scope for the event handlers:
             (function (target) {})(bitmap);
+
             document.getElementById("loader").className = "";
             createjs.Ticker.addEventListener("tick", tick);
         }
@@ -163,13 +179,13 @@ define(function (require) {
             hitArea.y = imgH / 2;
             // Create a pen
             bitmap = new createjs.Bitmap(image);
-            pen_bitmap = bitmap
+            pen_bitmap = bitmap;
             container.addChild(bitmap);
-            bitmap.x = imagepos[0][0]
-            bitmap.y = imagepos[0][1]
-            bitmap.regX = imgW / 2 | 0;
-            bitmap.regY = imgH / 2 | 0;
-            bitmap.scaleX = bitmap.scaleY = bitmap.scale = 1
+            bitmap.x = imagepos[0][0];
+            bitmap.y = imagepos[0][1];
+            bitmap.regX = Math.floor(imgW / 2);
+            bitmap.regY = Math.floor(imgH / 2);
+            bitmap.scaleX = bitmap.scaleY = bitmap.scale = 1;
             bitmap.name = "bmp_pen";
             bitmap.cursor = "pointer";
             // Assign the hitArea to bitmap to use it for hit tests:
@@ -189,8 +205,15 @@ define(function (require) {
                         // Indicate that the stage should be updated
                         // on the next tick:
                         update = true;
-                        var midPt = new createjs.Point(oldPt.x + stage.mouseX >> 1, oldPt.y + stage.mouseY >> 1);
-                        drawingCanvas.graphics.setStrokeStyle(stroke, 'round', 'round').beginStroke(color).moveTo(midPt.x, midPt.y).curveTo(oldPt.x, oldPt.y, oldMidPt.x, oldMidPt.y);
+                        var midPt = new createjs.Point(
+                            (oldPt.x + stage.mouseX) >> 1,
+                            (oldPt.y + stage.mouseY) >> 1
+                        );
+                        drawingCanvas.graphics
+                            .setStrokeStyle(stroke, 'round', 'round')
+                            .beginStroke(color)
+                            .moveTo(midPt.x, midPt.y)
+                            .curveTo(oldPt.x, oldPt.y, oldMidPt.x, oldMidPt.y);
                         oldPt.x = stage.mouseX;
                         oldPt.y = stage.mouseY;
                         oldMidPt.x = midPt.x;
@@ -201,7 +224,7 @@ define(function (require) {
                     target.scaleX = target.scaleY = target.scale * 1.2;
                     update = true;
                     color = colors[(index++) % colors.length];
-                    stroke = Math.random() * 30 + 10 | 0;
+                    stroke = (Math.random() * 30 + 10) | 0;
                     oldPt = new createjs.Point(stage.mouseX, stage.mouseY);
                     oldMidPt = oldPt;
                 }
@@ -210,6 +233,7 @@ define(function (require) {
                     update = true;
                 }
             })(bitmap);
+
             document.getElementById("loader").className = "";
             createjs.Ticker.addEventListener("tick", tick);
         }
@@ -224,7 +248,7 @@ define(function (require) {
         }
 
         function new_positions() {
-            for (i = 0; i < bitmaps.length; i++) {
+            for (var i = 0; i < bitmaps.length; i++) {
                 var fontSize = 6;
                 var ovrhdX = i.toString().length * fontSize;
                 var ovrhdY = fontSize + 4;
@@ -239,8 +263,8 @@ define(function (require) {
                     }
                 }
                 else {
-                    bitmaps[i].x = canvas.width * Math.random() | 0;
-                    bitmaps[i].y = canvas.height * Math.random() | 0;
+                    bitmaps[i].x = Math.floor(canvas.width * Math.random());
+                    bitmaps[i].y = Math.floor(canvas.height * Math.random());
                 }
                 bitmapLabels[i].x = bitmaps[i].x - ovrhdX;
                 bitmapLabels[i].y = bitmaps[i].y - ovrhdY;
@@ -250,6 +274,27 @@ define(function (require) {
             drawingCanvas.graphics.clear();
             update = true;
             shape = shape + 1;
+        }
+
+        /**
+         * Clear the canvas and reset the activity state.
+         */
+         /**
+         * Clear the canvas and reset the drawing lines.
+         * This function removes only the drawn lines without affecting the turtles' positions.
+         */
+         function clearCanvas() {
+            // Clear the drawing canvas
+            drawingCanvas.graphics.clear();
+
+            // Reset any drawing-related state variables if necessary
+            // (e.g., resetting old points if they are used)
+            oldPt = new createjs.Point(400, 300);
+            midPt = oldPt;
+            oldMidPt = oldPt;
+
+            // Update the stage to reflect changes
+            update = true;
         }
     });
 });
