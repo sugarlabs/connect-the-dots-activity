@@ -16,25 +16,21 @@ define(function (require) {
             icon.colorize(activityButton, colors);
         });
 
-        // Handle New Button Click
         var newButton = document.getElementById("new-button");
         newButton.onclick = function () {
             new_positions();
         }
 
-        // Handle Stop Button Click
         var stopButton = document.getElementById("stop-button");
         stopButton.addEventListener('click', function (e) {
             activity.close();
         });
-
-        // Handle Clear Button Click
         var clearButton = document.getElementById("clear-button"); // **New Line**
         clearButton.addEventListener('click', clearCanvas); // **New Line**
 
         // Then create a list of the label elements
-        var nlabels = [];
-        for (var i = 0; i < 21; i++) {
+        nlabels = [];
+        for (i = 0; i < 21; i++) {
             nlabels[i] = document.getElementById("n" + i.toString());
         }
 
@@ -64,7 +60,6 @@ define(function (require) {
         var Pen = "images/pen.svg";
         var shape = 0;
 
-        // Get things started
         init();
 
         function init() {
@@ -276,9 +271,6 @@ define(function (require) {
             shape = shape + 1;
         }
 
-        /**
-         * Clear the canvas and reset the activity state.
-         */
          /**
          * Clear the canvas and reset the drawing lines.
          * This function removes only the drawn lines without affecting the turtles' positions.
@@ -292,8 +284,6 @@ define(function (require) {
             oldPt = new createjs.Point(400, 300);
             midPt = oldPt;
             oldMidPt = oldPt;
-
-            // Update the stage to reflect changes
             update = true;
         }
     });
