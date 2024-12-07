@@ -80,7 +80,8 @@ define(function (require) {
     this.drawingCanvas = new createjs.Shape();
     this.stage.addChild(this.drawingCanvas);
     this.stage.update();
-    // (Further commits will add image loading and event setup here)
+
+    this.setupEventListeners();
   };
 
   DrawingApp.prototype.loadImages = function () {
@@ -236,4 +237,77 @@ define(function (require) {
     document.getElementById("loader").className = "";
     createjs.Ticker.addEventListener("tick", this.tick.bind(this));
   };
+
+  DrawingApp.prototype.tick = function (event) {
+    if (this.update) {
+      this.update = false;
+      this.stage.update(event);
+    }
+  };
+
+  DrawingApp.prototype.newPositions = function () {
+    for (var i = 0; i < this.bitmaps.length; i++) {
+        var fontSize = 6;
+        var ovrhdX = i.toString().length * fontSize;
+        var ovrhdY = fontSize + 4;
+
+
+        if (this.shape < shapes.length) {
+            if (i < shapes[this.shape].length) {
+                this.bitmaps[i].x = shapes[this.shape][i][0];
+                this.bitmaps[i].y = shapes[this.shape][i][1];
+            } else {
+                this.bitmaps[i].x = -100;
+                this.bitmaps[i].y = -100;
+            }
+        } else {
+            this.bitmaps[i].x = Math.floor(this.canvas.width * Math.random());
+            this.bitmaps[i].y = Math.floor(this.canvas.height * Math.random());
+        }
+
+
+        this.bitmapLabels[i].x = this.bitmaps[i].x - ovrhdX;
+        this.bitmapLabels[i].y = this.bitmaps[i].y - ovrhdY;
+    }
+    this.pen_bitmap.x = this.bitmaps[0].x;
+    this.pen_bitmap.y = this.bitmaps[0].y;
+    this.drawingCanvas.graphics.clear();
+    this.update = true;
+    this.shape += 1;
+};
+
+
+DrawingApp.prototype.clearCanvas = function () {
+    this.drawingCanvas.graphics.clear();
+    this.oldPt = new createjs.Point(400, 300);
+    this.midPt = this.oldPt;
+    this.oldMidPt = this.oldPt;
+    this.update = true;
+};
+
+
+  DrawingApp.prototype.setupEventListeners = function () {
+    var self = this;
+
+    // New positions button
+    var newButton = document.getElementById("new-button");
+    newButton.onclick = function () {
+      self.newPositions();
+    };
+
+    // Stop activity button
+    var stopButton = document.getElementById("stop-button");
+    stopButton.addEventListener("click", function () {
+      activity.close();
+    });
+
+    // Clear canvas button
+    var clearButton = document.getElementById("clear-button");
+    clearButton.addEventListener("click", function () {
+      self.clearCanvas();
+    });
+  };
+
+  // Export the DrawingApp class
+  return DrawingApp;
 });
