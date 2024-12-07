@@ -1,22 +1,29 @@
 <!DOCTYPE html>
 <html>
-
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Connect the Dots</title>
 
-    <link rel="stylesheet" href="lib/sugar-web/graphics/css/sugar.css">
-    <link rel="stylesheet" href="css/activity.css">
+    <link rel="stylesheet" href="lib/sugar-web/graphics/css/sugar.css" />
+    <link rel="stylesheet" href="css/activity.css" />
 
     <script data-main="js/loader" src="lib/require.js"></script>
   </head>
 
   <body>
     <div id="main-toolbar" class="toolbar">
-      <button class="toolbutton" id="activity-button" title="My Activity"></button>
-      <button class="toolbutton" id="new-button" title="New"></button>
-      <button class="toolbutton" id="clear-button" title="Clear Canvas"></button>
-      <button class="toolbutton pull-right" id="stop-button" title="Stop"></button>
+      <button class="toolbutton tooltip" id="activity-button">
+        <span class="tooltiptext">My Activity</span>
+      </button>
+      <button class="toolbutton tooltip" id="new-button">
+        <span class="tooltiptext">New</span>
+      </button>
+      <button class="toolbutton tooltip" id="clear-button">
+        <span class="tooltiptext">Clear Canvas</span>
+      </button>
+      <button class="toolbutton pull-right tooltip" id="stop-button">
+        <span class="tooltiptext">Stop</span>
+      </button>
     </div>
 
     <div id="loader"></div>
@@ -30,7 +37,5 @@
     </div>
 
     <div id="labelDiv"></div>
-
   </body>
-
 </html>
