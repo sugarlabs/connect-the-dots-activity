@@ -22,9 +22,12 @@ define(function (require) {
   });
 
   function DrawingApp() {
+    // Stage and canvass
     this.canvas = null;
     this.stage = null;
     this.drawingCanvas = null;
+
+    // Drawing variables
     this.oldPt = null;
     this.midPt = null;
     this.oldMidPt = null;
@@ -40,34 +43,47 @@ define(function (require) {
     ];
     this.index = 0;
     this.update = true;
+
+    // Assets and bitmaps
     this.imagepos = [];
     this.myimages = [];
     this.bitmaps = [];
     this.bitmapLabels = [];
     this.pen_bitmap = null;
+
+    // Other variables
     this.nlabels = [];
     this.shape = 0;
+
+    // Image sources
     this.Star = "images/star.svg";
     this.Dot = "images/dot.svg";
     this.Pen = "images/pen.svg";
   }
 
   DrawingApp.prototype.init = function () {
+    var self = this;
+
     if (window.top != window) {
       document.getElementById("header").style.display = "none";
     }
     document.getElementById("loader").className = "loader";
 
+    // Set up the canvas and stage
     this.canvas = document.getElementById("myCanvas");
     this.stage = new createjs.Stage(this.canvas);
+
+    // Enable touch and mouse interactions
     createjs.Touch.enable(this.stage);
     this.stage.mouseMoveOutside = true;
     this.stage.enableMouseOver(10);
 
+    // Initialize drawing points
     this.oldPt = new createjs.Point(400, 300);
     this.midPt = this.oldPt;
     this.oldMidPt = this.oldPt;
 
+    // Initialize image positions and labels
     for (var i = 0; i < 21; i++) {
       this.imagepos[i] = [-100, -100];
       this.nlabels[i] = document.getElementById("n" + i.toString());
@@ -76,11 +92,12 @@ define(function (require) {
     // Load images
     this.loadImages();
 
-    // Drawing canvas
+    // Create a drawing canvas for the activity
     this.drawingCanvas = new createjs.Shape();
     this.stage.addChild(this.drawingCanvas);
     this.stage.update();
 
+    // Set up event listeners
     this.setupEventListeners();
   };
 
@@ -247,44 +264,40 @@ define(function (require) {
 
   DrawingApp.prototype.newPositions = function () {
     for (var i = 0; i < this.bitmaps.length; i++) {
-        var fontSize = 6;
-        var ovrhdX = i.toString().length * fontSize;
-        var ovrhdY = fontSize + 4;
+      var fontSize = 6;
+      var ovrhdX = i.toString().length * fontSize;
+      var ovrhdY = fontSize + 4;
 
-
-        if (this.shape < shapes.length) {
-            if (i < shapes[this.shape].length) {
-                this.bitmaps[i].x = shapes[this.shape][i][0];
-                this.bitmaps[i].y = shapes[this.shape][i][1];
-            } else {
-                this.bitmaps[i].x = -100;
-                this.bitmaps[i].y = -100;
-            }
+      if (this.shape < shapes.length) {
+        if (i < shapes[this.shape].length) {
+          this.bitmaps[i].x = shapes[this.shape][i][0];
+          this.bitmaps[i].y = shapes[this.shape][i][1];
         } else {
-            this.bitmaps[i].x = Math.floor(this.canvas.width * Math.random());
-            this.bitmaps[i].y = Math.floor(this.canvas.height * Math.random());
+          this.bitmaps[i].x = -100;
+          this.bitmaps[i].y = -100;
         }
+      } else {
+        this.bitmaps[i].x = Math.floor(this.canvas.width * Math.random());
+        this.bitmaps[i].y = Math.floor(this.canvas.height * Math.random());
+      }
 
-
-        this.bitmapLabels[i].x = this.bitmaps[i].x - ovrhdX;
-        this.bitmapLabels[i].y = this.bitmaps[i].y - ovrhdY;
+      this.bitmapLabels[i].x = this.bitmaps[i].x - ovrhdX;
+      this.bitmapLabels[i].y = this.bitmaps[i].y - ovrhdY;
     }
     this.pen_bitmap.x = this.bitmaps[0].x;
     this.pen_bitmap.y = this.bitmaps[0].y;
     this.drawingCanvas.graphics.clear();
     this.update = true;
     this.shape += 1;
-};
+  };
 
-
-DrawingApp.prototype.clearCanvas = function () {
+  DrawingApp.prototype.clearCanvas = function () {
     this.drawingCanvas.graphics.clear();
     this.oldPt = new createjs.Point(400, 300);
     this.midPt = this.oldPt;
     this.oldMidPt = this.oldPt;
     this.update = true;
-};
-
+  };
 
   DrawingApp.prototype.setupEventListeners = function () {
     var self = this;
