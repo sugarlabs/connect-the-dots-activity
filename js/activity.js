@@ -55,6 +55,11 @@ define(function (require) {
     this.nlabels = [];
     this.shape = 0;
 
+    // Undo/Redo variables
+    this.strokes = [];
+    this.undoneStrokes = [];
+    this.currentStroke = null;
+
     // Image sources
     this.Star = "images/star.svg";
     this.Dot = "images/dot.svg";
@@ -207,11 +212,12 @@ define(function (require) {
           y: target.y - evt.stageY,
         };
 
-        // Initialize drawing variables
-        self.color = self.colors[self.index++ % self.colors.length];
-        self.stroke = (Math.random() * 30 + 10) | 0;
-        self.oldPt = new createjs.Point(self.stage.mouseX, self.stage.mouseY);
-        self.oldMidPt = self.oldPt;
+        // Initialize a new stroke
+        self.currentStroke = {
+          color: self.color,
+          strokeSize: self.stroke,
+          segments: [],
+        };
 
         evt.onMouseMove = function (ev) {
           target.x = ev.stageX + offset.x;
@@ -233,16 +239,37 @@ define(function (require) {
               self.oldMidPt.y
             );
 
+          // Record this segment of the stroke
+          self.currentStroke.segments.push({
+            start: { x: self.oldMidPt.x, y: self.oldMidPt.y },
+            control: { x: self.oldPt.x, y: self.oldPt.y },
+            end: { x: midPt.x, y: midPt.y },
+          });
+
           self.oldPt.x = self.stage.mouseX;
           self.oldPt.y = self.stage.mouseY;
           self.oldMidPt.x = midPt.x;
           self.oldMidPt.y = midPt.y;
+        };
+
+        evt.onMouseUp = function () {
+          // Finalize the current stroke
+          if (self.currentStroke && self.currentStroke.segments.length > 0) {
+            self.strokes.push(self.currentStroke);
+            self.currentStroke = null;
+            // Clear the redo stack since a new stroke is drawn
+            self.undoneStrokes = [];
+          }
         };
       };
 
       target.onMouseOver = function () {
         target.scaleX = target.scaleY = target.scale * 1.2;
         self.update = true;
+        self.color = self.colors[self.index++ % self.colors.length];
+        self.stroke = (Math.random() * 30 + 10) | 0;
+        self.oldPt = new createjs.Point(self.stage.mouseX, self.stage.mouseY);
+        self.oldMidPt = self.oldPt;
       };
 
       target.onMouseOut = function () {
@@ -297,6 +324,10 @@ define(function (require) {
     this.midPt = this.oldPt;
     this.oldMidPt = this.oldPt;
     this.update = true;
+
+    // Clear the stroke history
+    this.strokes = [];
+    this.undoneStrokes = [];
   };
 
   DrawingApp.prototype.setupEventListeners = function () {
@@ -319,8 +350,58 @@ define(function (require) {
     clearButton.addEventListener("click", function () {
       self.clearCanvas();
     });
+
+    // Undo button
+    var undoButton = document.getElementById("undo-button");
+    undoButton.addEventListener("click", function () {
+      self.undo();
+    });
+
+    // Redo button
+    var redoButton = document.getElementById("redo-button");
+    redoButton.addEventListener("click", function () {
+      self.redo();
+    });
   };
 
-  // Export the DrawingApp class
-  return DrawingApp;
+  // Undo the last stroke
+  DrawingApp.prototype.undo = function () {
+    if (this.strokes.length > 0) {
+      var lastStroke = this.strokes.pop();
+      this.undoneStrokes.push(lastStroke);
+      this.redrawStrokes();
+    }
+  };
+
+  // Redo the last undone stroke
+  DrawingApp.prototype.redo = function () {
+    if (this.undoneStrokes.length > 0) {
+      var stroke = this.undoneStrokes.pop();
+      this.strokes.push(stroke);
+      this.redrawStrokes();
+    }
+  };
+
+  // Redraw all strokes from the history
+  DrawingApp.prototype.redrawStrokes = function () {
+    // Clear the drawingCanvas
+    this.drawingCanvas.graphics.clear();
+
+    // Redraw each stroke
+    for (var i = 0; i < this.strokes.length; i++) {
+      var s = this.strokes[i];
+      this.drawingCanvas.graphics
+        .setStrokeStyle(s.strokeSize, "round", "round")
+        .beginStroke(s.color);
+
+      for (var j = 0; j < s.segments.length; j++) {
+        var seg = s.segments[j];
+        this.drawingCanvas.graphics
+          .moveTo(seg.start.x, seg.start.y)
+          .curveTo(seg.control.x, seg.control.y, seg.end.x, seg.end.y);
+      }
+    }
+
+    this.update = true;
+  };
 });
