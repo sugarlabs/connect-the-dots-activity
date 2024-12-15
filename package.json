@@ -3,9 +3,11 @@
   "volo": {
     "baseUrl": "lib",
     "dependencies": {
-      "sugar-web": "github:sugarlabs/sugar-web/master",
+      "sugar-web": "github:sugarlabs/sugar-web/v0.110.0",
       "domReady": "github:requirejs/domReady/2.0.1",
-      "webL10n": "github:sugarlabs/webL10n/master"
+      "webL10n": "github:sugarlabs/webL10n/master",
+      "mustache": "github:janl/mustache.js/0.7.2",
+      "text": "github:requirejs/text/2.0.16"
     }
   }
 }
