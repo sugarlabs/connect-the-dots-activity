@@ -1,3 +1,32 @@
+#main-toolbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: linear-gradient(90deg, #FFD700, #8B4513);
+  padding: 10px;
+  border-bottom: 1px solid #8B4513;
+}
+
+#main-toolbar button {
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 40px;
+  height: 40px;
+  border: none;
+  cursor: pointer;
+  margin: 5px;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+#main-toolbar button:hover {
+  transform: scale(1.1);
+  background-color: #DAA520;
+}
+
+#main-toolbar button:active {
+  transform: scale(1);
+}
+
 #main-toolbar #activity-button {
   background-image: url(../activity/activity-icon.svg);
 }
@@ -8,4 +37,12 @@
 
 #main-toolbar #clear-button {
   background-image: url(../icons/clear-button.svg);
+}
+
+#main-toolbar #save-button {
+  background-image: url(../icons/save-button.svg);
+}
+
+#main-toolbar #load-button {
+  background-image: url(../icons/load-button.svg);
 }

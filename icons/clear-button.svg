@@ -6,10 +6,11 @@
 <svg enable-background="new 0 0 55 55" height="55px" version="1.1" viewBox="0 0 55 55" width="55px" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
     <g display="block" id="emblem-clear">
         <polygon 
-            fill="&fill_color;" 
+            fill="#ffffff" 
             points="5,10 10,5 45,5 50,10 50,45 45,50 10,50 5,45" 
-            stroke="&stroke_color;" 
+            stroke="#666666" 
             stroke-linecap="round" 
             stroke-width="3.5"/>
+        <text x="27.5" y="30" font-family="Arial" font-size="12" fill="#666666" text-anchor="middle" alignment-baseline="middle">clear</text>
     </g>
 </svg>
