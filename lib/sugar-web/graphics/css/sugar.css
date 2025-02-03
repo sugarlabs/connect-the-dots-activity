@@ -66,14 +66,6 @@ a {
   height: 100%;
 }
 .toolbar .toolbutton.invoker:before {
-  content: "";
-  background-color: transparent;
-  position: absolute;
-  display: block;
-  width: 55px;
-  height: 11px;
-  bottom: -4px;
-  right: -4px;
   background-image: url('../icons/emblems/arrow-down.svg');
 }
 .toolbar #stop-button {
